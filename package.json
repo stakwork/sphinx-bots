@@ -1,0 +1,28 @@
+{
+  "name": "sphinx-bot",
+  "version": "0.1.0",
+  "description": "Sphinx chat bots",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build-web": "tsc && webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "sphinx",
+    "bitcoin",
+    "lightning"
+  ],
+  "author": "Evan Feenstra",
+  "license": "ISC",
+  "devDependencies": {
+    "terser-webpack-plugin": "^4.0.0",
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  },
+  "dependencies": {
+    "eventemitter3": "^4.0.7"
+  }
+}
