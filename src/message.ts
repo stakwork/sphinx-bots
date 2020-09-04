@@ -20,11 +20,12 @@ export interface Author {
 
 export interface Message {
     content: string
-    author: Author
-    member: Member
-    guild: Guild
-    webhookID: string
-    reply: Function
     channel: Channel
-    embed: MessageEmbed
+    author?: Author
+    member?: Member
+    guild?: Guild
+    webhookID?: string
+    reply?: Function
+    embed?: MessageEmbed
+    type?: number
 }

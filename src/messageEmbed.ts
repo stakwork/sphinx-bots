@@ -58,7 +58,7 @@ export default class MessageEmbed {
     }
 
     makeHTML(){
-        let h:string = '<div style="position:relative;max-width:280px;">'
+        let h:string = '<div style="position:relative;max-width:280px;min-width:180px;">'
         if(this.title) {
             h += `<div style="font-size:15px;margin:5px 0;max-width:90%;"><b>${this.title}</b></div>`
         }
@@ -77,9 +77,9 @@ export default class MessageEmbed {
         }
         if(this.thumbnail) {
             if(this.thumbnail.startsWith('<svg') && this.thumbnail.endsWith('</svg>')){
-                h += '<div style="position:absolute;top:10px;right:10px;">'+this.thumbnail+'</div>'
+                h += '<div style="position:absolute;top:0;right:0;">'+this.thumbnail+'</div>'
             } else {
-                h += '<img style="position:absolute;top:10px;right:10px;height:15px;width:15px;" src="'+this.thumbnail+'" />'
+                h += '<img style="position:absolute;top:0;right:0;height:16px;width:16px;" src="'+this.thumbnail+'" />'
             }
         }
         h += '</div>'
