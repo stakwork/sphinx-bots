@@ -41,17 +41,17 @@ var MessageEmbed = /** @class */ (function () {
     MessageEmbed.prototype.makeHTML = function () {
         var h = '<div>';
         if (this.title) {
-            h += "<div style=\"font-size:14px;margin:5px 0;\"><b>" + this.title + "</b></div>";
+            h += "<div style=\"font-size:15px;margin:5px 0;\"><b>" + this.title + "</b></div>";
         }
         if (this.description) {
-            h += "<div style=\"font-size:14px;margin:5px 0;\">" + this.description + "</div>";
+            h += "<div style=\"font-size:15px;margin:5px 0;\">" + this.description + "</div>";
         }
         if (this.fields && this.fields.length) {
             this.fields.forEach(function (f) {
                 if (f.name && f.value) {
                     h += "<div style=\"margin:5px 0;\">";
-                    h += "<div style=\"font-size:12px;opacity:0.7;\">" + f.name + "</div>";
-                    h += "<div style=\"font-size:12px;\">" + f.value + "</div>";
+                    h += "<div style=\"font-size:13px;opacity:0.7;\">" + f.name + "</div>";
+                    h += "<div style=\"font-size:13px;\">" + f.value + "</div>";
                     h += "</div>";
                 }
             });

@@ -3,7 +3,9 @@ import { Message, Channel } from './message'
 
 const EE = new EventEmitter()
 
-export const _emit = EE.emit
+export const _emit = function(topic:string, msg:any) {
+    EE.emit(topic, msg)
+}
 
 export enum MSG_TYPE {
     READY = 'ready',

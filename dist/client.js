@@ -50,7 +50,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MSG_TYPE = exports._emit = void 0;
 var EventEmitter = require("eventemitter3");
 var EE = new EventEmitter();
-exports._emit = EE.emit;
+exports._emit = function (topic, msg) {
+    EE.emit(topic, msg);
+};
 var MSG_TYPE;
 (function (MSG_TYPE) {
     MSG_TYPE["READY"] = "ready";

@@ -1,5 +1,5 @@
 import { Message } from './message';
-export declare const _emit: <T extends string | symbol>(event: T, ...args: any[]) => boolean;
+export declare const _emit: (topic: string, msg: any) => void;
 export declare enum MSG_TYPE {
     READY = "ready",
     MESSAGE = "message",
