@@ -1,5 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var dompurify = require("isomorphic-dompurify");
+var sanitizer = dompurify.sanitize;
+console.log(sanitizer);
 var MessageEmbed = /** @class */ (function () {
     function MessageEmbed() {
         this.author = '';
@@ -9,6 +12,7 @@ var MessageEmbed = /** @class */ (function () {
         this.thumbnail = '';
         this.html = '';
         this.fields = [];
+        this.image = '';
     }
     MessageEmbed.prototype.setTitle = function (title) {
         this.title = title;
@@ -30,6 +34,10 @@ var MessageEmbed = /** @class */ (function () {
         this.thumbnail = thumb;
         return this.makeHTML();
     };
+    MessageEmbed.prototype.setImage = function (image) {
+        this.image = image;
+        return this.makeHTML();
+    };
     MessageEmbed.prototype.addField = function (f) {
         this.fields.push(f);
         return this.makeHTML();
@@ -39,12 +47,12 @@ var MessageEmbed = /** @class */ (function () {
         return this.makeHTML();
     };
     MessageEmbed.prototype.makeHTML = function () {
-        var h = '<div>';
+        var h = '<div style="position:relative;max-width:280px;">';
         if (this.title) {
-            h += "<div style=\"font-size:15px;margin:5px 0;\"><b>" + this.title + "</b></div>";
+            h += "<div style=\"font-size:15px;margin:5px 0;max-width:90%;\"><b>" + this.title + "</b></div>";
         }
         if (this.description) {
-            h += "<div style=\"font-size:15px;margin:5px 0;\">" + this.description + "</div>";
+            h += "<div style=\"font-size:15px;margin:5px 0;max-width:90%;\">" + this.description + "</div>";
         }
         if (this.fields && this.fields.length) {
             this.fields.forEach(function (f) {
@@ -56,8 +64,16 @@ var MessageEmbed = /** @class */ (function () {
                 }
             });
         }
+        if (this.thumbnail) {
+            if (this.thumbnail.startsWith('<svg') && this.thumbnail.endsWith('</svg>')) {
+                h += '<div style="position:absolute;top:10px;right:10px;">' + this.thumbnail + '</div>';
+            }
+            else {
+                h += '<img style="position:absolute;top:10px;right:10px;height:15px;width:15px;" src="' + this.thumbnail + '" />';
+            }
+        }
         h += '</div>';
-        this.html = h;
+        this.html = sanitizer(h);
         return this;
     };
     return MessageEmbed;

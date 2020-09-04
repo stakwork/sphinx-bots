@@ -1,3 +1,5 @@
+import * as dompurify from 'isomorphic-dompurify'
+const sanitizer = dompurify.sanitize;
 
 interface Field {
     name: string
@@ -13,6 +15,7 @@ export default class MessageEmbed {
     thumbnail: string = ''
     html: string = ''
     fields: Field[] = []
+    image: string = ''
 
     setTitle(title:string) {
         this.title = title
@@ -39,6 +42,11 @@ export default class MessageEmbed {
         return this.makeHTML()
     }
 
+    setImage(image:string) {
+        this.image = image
+        return this.makeHTML()
+    }
+
     addField(f:Field) {
         this.fields.push(f)
         return this.makeHTML()
@@ -50,12 +58,12 @@ export default class MessageEmbed {
     }
 
     makeHTML(){
-        let h:string = '<div>'
+        let h:string = '<div style="position:relative;max-width:280px;">'
         if(this.title) {
-            h += `<div style="font-size:15px;margin:5px 0;"><b>${this.title}</b></div>`
+            h += `<div style="font-size:15px;margin:5px 0;max-width:90%;"><b>${this.title}</b></div>`
         }
         if(this.description) {
-            h += `<div style="font-size:15px;margin:5px 0;">${this.description}</div>`
+            h += `<div style="font-size:15px;margin:5px 0;max-width:90%;">${this.description}</div>`
         }
         if(this.fields && this.fields.length) {
             this.fields.forEach(f=>{
@@ -66,10 +74,16 @@ export default class MessageEmbed {
                     h += `</div>`
                 }
             })
-           
+        }
+        if(this.thumbnail) {
+            if(this.thumbnail.startsWith('<svg') && this.thumbnail.endsWith('</svg>')){
+                h += '<div style="position:absolute;top:10px;right:10px;">'+this.thumbnail+'</div>'
+            } else {
+                h += '<img style="position:absolute;top:10px;right:10px;height:15px;width:15px;" src="'+this.thumbnail+'" />'
+            }
         }
         h += '</div>'
-        this.html = h
+        this.html = sanitizer(h)
         return this
     }
 

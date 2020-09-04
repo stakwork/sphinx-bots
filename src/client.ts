@@ -36,13 +36,14 @@ export default class Client {
     async on(msgType: MSG_TYPE, callback: Callback) {
         if (!this.token) return
         EE.on(msgType, m => {
-            this.log('===> EE.on received' + msgType + 'CONTENT:' + m.content)
-            m.channel = <Channel>{
-                id: '_',
-                send: (msg: Message) => this.embedToAction({ ...msg, chatUUID: m.chatUUID })
+            this.log('===> EE.on received' + msgType + 'CONTENT:' + JSON.stringify(m))
+            const channel = <Channel>{
+                id: m.channel.id,
+                send: (msg: Message) => this.embedToAction({...msg,channel:{id:m.channel.id,send:function(){}}})
             }
+            m.channel = channel
             m.reply = function (content:string) {
-                this.embedToAction({content, chatUUID: m.chatUUID})
+                this.embedToAction({content, channel})
             }
             callback(m)
         })
@@ -54,15 +55,11 @@ export default class Client {
         if (m.embed && m.embed.html) {
             content = m.embed.html
             botName = m.embed.author
-        } else if (typeof m === 'string') {
-            content = m
+        } else if (typeof m.content === 'string') {
+            content = m.content
         }
-        this.log('==> action to send from lib:' + JSON.stringify({
-            botName, chatUUID: m.chatUUID,
-            content, action: 'broadcast',
-        }))
         this.action(<Action>{
-            botName, chatUUID: m.chatUUID,
+            botName, chatUUID: m.channel.id,
             content, action: 'broadcast',
         })
     }

@@ -10,11 +10,13 @@ export default class MessageEmbed {
     thumbnail: string;
     html: string;
     fields: Field[];
+    image: string;
     setTitle(title: string): this;
     setAuthor(author: string): this;
     setColor(color: any): this;
     setDescription(desc: string): this;
     setThumbnail(thumb: string): this;
+    setImage(image: string): this;
     addField(f: Field): this;
     addFields(fs: Field[]): this;
     makeHTML(): this;

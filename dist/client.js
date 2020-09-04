@@ -90,13 +90,14 @@ var Client = /** @class */ (function () {
                 if (!this.token)
                     return [2 /*return*/];
                 EE.on(msgType, function (m) {
-                    _this.log('===> EE.on received' + msgType + 'CONTENT:' + m.content);
-                    m.channel = {
-                        id: '_',
-                        send: function (msg) { return _this.embedToAction(__assign(__assign({}, msg), { chatUUID: m.chatUUID })); }
+                    _this.log('===> EE.on received' + msgType + 'CONTENT:' + JSON.stringify(m));
+                    var channel = {
+                        id: m.channel.id,
+                        send: function (msg) { return _this.embedToAction(__assign(__assign({}, msg), { channel: { id: m.channel.id, send: function () { } } })); }
                     };
+                    m.channel = channel;
                     m.reply = function (content) {
-                        this.embedToAction({ content: content, chatUUID: m.chatUUID });
+                        this.embedToAction({ content: content, channel: channel });
                     };
                     callback(m);
                 });
@@ -111,18 +112,12 @@ var Client = /** @class */ (function () {
             content = m.embed.html;
             botName = m.embed.author;
         }
-        else if (typeof m === 'string') {
-            content = m;
+        else if (typeof m.content === 'string') {
+            content = m.content;
         }
-        this.log('==> action to send from lib:' + JSON.stringify({
-            botName: botName,
-            chatUUID: m.chatUUID,
-            content: content,
-            action: 'broadcast',
-        }));
         this.action({
             botName: botName,
-            chatUUID: m.chatUUID,
+            chatUUID: m.channel.id,
             content: content,
             action: 'broadcast',
         });

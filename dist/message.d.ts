@@ -21,6 +21,5 @@ export interface Message {
     webhookID: string;
     reply: Function;
     channel: Channel;
-    chatUUID: string;
     embed: MessageEmbed;
 }
