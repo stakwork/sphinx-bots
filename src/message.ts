@@ -1,3 +1,4 @@
+import MessageEmbed from './messageEmbed'
 
 export interface Channel {
     id: string
@@ -24,4 +25,7 @@ export interface Message {
     guild: Guild
     webhookID: string
     reply: Function
+    channel: Channel
+    chatUUID: string
+    embed: MessageEmbed
 }

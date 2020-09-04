@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36,7 +47,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MSG_TYPE = void 0;
+exports.MSG_TYPE = exports._emit = void 0;
+var EventEmitter = require("eventemitter3");
+var EE = new EventEmitter();
+exports._emit = EE.emit;
 var MSG_TYPE;
 (function (MSG_TYPE) {
     MSG_TYPE["READY"] = "ready";
@@ -46,20 +60,69 @@ var MSG_TYPE;
 })(MSG_TYPE = exports.MSG_TYPE || (exports.MSG_TYPE = {}));
 var Client = /** @class */ (function () {
     function Client() {
-        this.user = {}; // ?
+        this.token = '';
+        this.action = function () { }; // post to webhook
+        this.logging = false;
     }
-    Client.prototype.login = function (token) {
+    Client.prototype.login = function (token, action) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
+                this.token = token;
+                if (this.token === '_')
+                    this.logging = true;
+                if (action)
+                    this.action = action;
                 return [2 /*return*/];
             });
         });
     };
+    Client.prototype.log = function (a) {
+        if (!this.logging)
+            return;
+        console.log(a);
+    };
     Client.prototype.on = function (msgType, callback) {
         return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
             return __generator(this, function (_a) {
+                if (!this.token)
+                    return [2 /*return*/];
+                EE.on(msgType, function (m) {
+                    _this.log('===> EE.on received' + msgType + 'CONTENT:' + m.content);
+                    m.channel = {
+                        id: '_',
+                        send: function (msg) { return _this.embedToAction(__assign(__assign({}, msg), { chatUUID: m.chatUUID })); }
+                    };
+                    m.reply = function (content) {
+                        this.embedToAction({ content: content, chatUUID: m.chatUUID });
+                    };
+                    callback(m);
+                });
                 return [2 /*return*/];
             });
+        });
+    };
+    Client.prototype.embedToAction = function (m) {
+        var content = '';
+        var botName = 'Bot';
+        if (m.embed && m.embed.html) {
+            content = m.embed.html;
+            botName = m.embed.author;
+        }
+        else if (typeof m === 'string') {
+            content = m;
+        }
+        this.log('==> action to send from lib:' + JSON.stringify({
+            botName: botName,
+            chatUUID: m.chatUUID,
+            content: content,
+            action: 'broadcast',
+        }));
+        this.action({
+            botName: botName,
+            chatUUID: m.chatUUID,
+            content: content,
+            action: 'broadcast',
         });
     };
     return Client;

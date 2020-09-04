@@ -1,4 +1,5 @@
-import Client from './client'
+import Client, {MSG_TYPE, _emit} from './client'
 import MessageEmbed from './messageEmbed'
+import {Message} from './message'
 
-export {Client,MessageEmbed}
+export {Client,MessageEmbed,MSG_TYPE,Message,_emit}

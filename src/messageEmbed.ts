@@ -1,34 +1,76 @@
 
-export interface Embed {
-    author: string
-    color: string
-    description: string
-    thumbnail: string
+interface Field {
+    name: string
+    value: string
 }
 
 export default class MessageEmbed {
 
-    embed: Embed = {
-        author:'',
-        color:'',
-        description:'',
-        thumbnail:'',
+    author: string = ''
+    title: string = ''
+    color: string = ''
+    description: string = ''
+    thumbnail: string = ''
+    html: string = ''
+    fields: Field[] = []
+
+    setTitle(title:string) {
+        this.title = title
+        return this.makeHTML()
     }
 
-    async setAuthor(author:string) {
-        this.embed.author = author
+    setAuthor(author:string) {
+        this.author = author
+        return this.makeHTML()
     }
 
-    async setColor(color:any) {
-        this.embed.color = color
+    setColor(color:any) {
+        this.color = color
+        return this.makeHTML()
     }
 
-    async setDescription(desc:string) {
-        this.embed.description = desc
+    setDescription(desc:string) {
+        this.description = desc
+        return this.makeHTML()
     }
 
-    async setThumbnail(thumb:string) {
-        this.embed.thumbnail = thumb
+    setThumbnail(thumb:string) {
+        this.thumbnail = thumb
+        return this.makeHTML()
+    }
+
+    addField(f:Field) {
+        this.fields.push(f)
+        return this.makeHTML()
+    }
+
+    addFields(fs:Field[]) {
+        this.fields = this.fields.concat(fs)
+        return this.makeHTML()
+    }
+
+    makeHTML(){
+        let h:string = '<div>'
+        if(this.title) {
+            h += `<div style="font-size:14px;margin:5px 0;"><b>${this.title}</b></div>`
+        }
+        if(this.description) {
+            h += `<div style="font-size:14px;margin:5px 0;">${this.description}</div>`
+        }
+        if(this.fields && this.fields.length) {
+            this.fields.forEach(f=>{
+                if(f.name && f.value) {
+                    h += `<div style="margin:5px 0;">`
+                    h += `<div style="font-size:12px;opacity:0.7;">${f.name}</div>`
+                    h += `<div style="font-size:12px;">${f.value}</div>`
+                    h += `</div>`
+                }
+            })
+           
+        }
+        h += '</div>'
+        this.html = h
+        return this
     }
 
 }

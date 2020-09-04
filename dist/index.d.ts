@@ -1,3 +1,4 @@
-import Client from './client';
+import Client, { MSG_TYPE, _emit } from './client';
 import MessageEmbed from './messageEmbed';
-export { Client, MessageEmbed };
+import { Message } from './message';
+export { Client, MessageEmbed, MSG_TYPE, Message, _emit };
