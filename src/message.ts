@@ -5,9 +5,13 @@ export interface Channel {
     send: Function
 }
 
+interface Role {
+    name: string
+}
 export interface Member {
     id: string
     nickname: string
+    roles: Role[]
 }
 
 export interface Guild {
@@ -21,11 +25,11 @@ export interface Author {
 export interface Message {
     content: string
     channel: Channel
-    author?: Author
+    reply: Function
     member?: Member
+    author?: Author
     guild?: Guild
     webhookID?: string
-    reply?: Function
     embed?: MessageEmbed
     type?: number
 }

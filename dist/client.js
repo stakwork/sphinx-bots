@@ -90,14 +90,14 @@ var Client = /** @class */ (function () {
                 if (!this.token)
                     return [2 /*return*/];
                 EE.on(msgType, function (m) {
-                    _this.log('===> EE.on received' + msgType + 'CONTENT:' + JSON.stringify(m));
+                    // this.log('===> EE.on received' + msgType + 'CONTENT:' + JSON.stringify(m))
                     var channel = {
                         id: m.channel.id,
                         send: function (msg) { return _this.embedToAction(__assign(__assign({}, msg), { channel: { id: m.channel.id, send: function () { } } })); }
                     };
                     m.channel = channel;
                     m.reply = function (content) {
-                        this.embedToAction({ content: content, channel: channel });
+                        _this.embedToAction({ content: content, channel: channel, reply: function () { } });
                     };
                     callback(m);
                 });
@@ -115,6 +115,10 @@ var Client = /** @class */ (function () {
         else if (typeof m.content === 'string') {
             content = m.content;
         }
+        // console.log(<Action>{
+        //     botName, chatUUID: m.channel.id,
+        //     content, action: 'broadcast',
+        // })
         this.action({
             botName: botName,
             chatUUID: m.channel.id,
