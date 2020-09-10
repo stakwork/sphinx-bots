@@ -1,6 +1,8 @@
 interface Field {
     name: string;
     value: string;
+    inline?: boolean;
+    color?: string;
 }
 export default class MessageEmbed {
     author: string;

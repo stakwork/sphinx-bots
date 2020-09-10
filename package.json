@@ -1,6 +1,6 @@
 {
   "name": "sphinx-bot",
-  "version": "0.1.26",
+  "version": "0.1.28",
   "description": "Sphinx chat bots",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,7 +23,9 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
+    "@types/node-fetch": "^2.5.7",
     "eventemitter3": "^4.0.7",
-    "isomorphic-dompurify": "^0.6.0"
+    "isomorphic-dompurify": "^0.6.0",
+    "node-fetch": "^2.6.1"
   }
 }

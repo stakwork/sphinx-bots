@@ -4,6 +4,8 @@ const sanitizer = dompurify.sanitize;
 interface Field {
     name: string
     value: string
+    inline?: boolean
+    color?: string
 }
 
 export default class MessageEmbed {
@@ -68,9 +70,11 @@ export default class MessageEmbed {
         if(this.fields && this.fields.length) {
             this.fields.forEach(f=>{
                 if(f.name && f.value) {
-                    h += `<div style="margin:5px 0;">`
-                    h += `<div style="font-size:13px;opacity:0.7;">${f.name}</div>`
-                    h += `<div style="font-size:13px;">${f.value}</div>`
+                    const wrapStyle = `font-size:13px;margin:5px 0;${f.inline?'display:flex;align-items:center;':''}`
+                    const valStyle = `${f.color && isColorString(f.color) ? 'color:'+f.color+';':''}`
+                    h += `<div style="${wrapStyle}">`
+                    h += `<div style="opacity:0.7;margin-right:8px;">${f.name}</div>`
+                    h += `<div style="${valStyle}">${f.value}</div>`
                     h += `</div>`
                 }
             })
@@ -87,4 +91,8 @@ export default class MessageEmbed {
         return this
     }
 
+}
+
+function isColorString(color:string):Boolean{
+    return color?true:false
 }

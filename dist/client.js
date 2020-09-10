@@ -49,6 +49,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MSG_TYPE = exports._emit = void 0;
 var EventEmitter = require("eventemitter3");
+var node_fetch_1 = require("node-fetch");
 var EE = new EventEmitter();
 exports._emit = function (topic, msg) {
     EE.emit(topic, msg);
@@ -70,8 +71,9 @@ var Client = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 this.token = token;
-                if (this.token === '_')
+                if (this.token === '_') {
                     this.logging = true;
+                }
                 if (action)
                     this.action = action;
                 return [2 /*return*/];
@@ -119,11 +121,48 @@ var Client = /** @class */ (function () {
         //     botName, chatUUID: m.channel.id,
         //     content, action: 'broadcast',
         // })
-        this.action({
+        var a = {
             botName: botName,
             chatUUID: m.channel.id,
             content: content,
             action: 'broadcast',
+        };
+        if (this.action) {
+            this.action(a);
+        }
+        else {
+            this.doAction(a);
+        }
+    };
+    Client.prototype.doAction = function (a) {
+        return __awaiter(this, void 0, void 0, function () {
+            var params, arr, bot_id, bot_secret, url, e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        params = Buffer.from(this.token, 'base64').toString('binary');
+                        arr = params.split('::');
+                        if (arr.length < 3)
+                            return [2 /*return*/]; // 0:id 1:secret 2:url
+                        bot_id = arr[0];
+                        bot_secret = arr[1];
+                        url = arr[2];
+                        return [4 /*yield*/, node_fetch_1.default(url, {
+                                method: 'POST',
+                                body: JSON.stringify(__assign(__assign({}, a), { bot_id: bot_id, bot_secret: bot_secret })),
+                                headers: { 'Content-Type': 'application/json' }
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        e_1 = _a.sent();
+                        console.log('doAction error:', e_1);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
         });
     };
     return Client;

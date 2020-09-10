@@ -15,6 +15,7 @@ export default class Client {
     log(a: string): void;
     on(msgType: MSG_TYPE, callback: Callback): Promise<void>;
     embedToAction(m: Message): void;
+    doAction(a: Action): Promise<void>;
 }
 export interface Action {
     action: string;
