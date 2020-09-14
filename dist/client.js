@@ -141,6 +141,8 @@ var Client = /** @class */ (function () {
         }
     };
     Client.prototype.parseToken = function () {
+        if (!this.token)
+            return;
         var arr = this.token.split('.');
         if (arr.length < 3)
             return null;

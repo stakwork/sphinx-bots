@@ -20,7 +20,7 @@ export default class Client {
     log(a: string): void;
     on(msgType: MSG_TYPE, callback: Callback): Promise<void>;
     embedToAction(m: Message): void;
-    parseToken(): Token | null;
+    parseToken(): Token | null | undefined;
     doAction(a: Action): Promise<void>;
     startServer(): void;
 }

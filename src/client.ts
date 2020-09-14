@@ -91,6 +91,7 @@ export default class Client {
     }
 
     parseToken() {
+        if (!this.token) return
         const arr = this.token.split('.')
         if (arr.length < 3) return null        
         // 0:id 1:secret 2:url
