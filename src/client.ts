@@ -91,13 +91,13 @@ export default class Client {
     }
 
     parseToken() {
-        const params = Buffer.from(this.token, 'base64').toString('binary')
-        const arr = params.split('::')
-        if (arr.length < 3) return null
-         // 0:id 1:secret 2:url
-        const bot_id = arr[0]
-        const bot_secret = arr[1]
-        const url = arr[2]
+        const arr = this.token.split('.')
+        if (arr.length < 3) return null        
+        // 0:id 1:secret 2:url
+        const bot_id = Buffer.from(arr[0], 'base64').toString('binary')
+        const bot_secret = Buffer.from(arr[1], 'base64').toString('binary')
+        const url = Buffer.from(arr[2], 'base64').toString('binary')
+        if(!bot_id||!bot_secret||!url) return null
         return <Token>{
             bot_id, bot_secret, url
         }
@@ -131,7 +131,7 @@ export default class Client {
         app.use(cors({
             allowedHeaders:['X-Requested-With','Content-Type','Accept','x-user-token','Authorization','x-secret']
         }))
-        app.get('/', (req: express.Request, res: express.Response) => {
+        app.post('/', (req: express.Request, res: express.Response) => {
             var secret = req.headers['x-secret'];
             if(secret!==bot_secret) return
             EE.emit(MSG_TYPE.MESSAGE, req.body)

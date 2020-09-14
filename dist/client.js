@@ -141,14 +141,15 @@ var Client = /** @class */ (function () {
         }
     };
     Client.prototype.parseToken = function () {
-        var params = Buffer.from(this.token, 'base64').toString('binary');
-        var arr = params.split('::');
+        var arr = this.token.split('.');
         if (arr.length < 3)
             return null;
         // 0:id 1:secret 2:url
-        var bot_id = arr[0];
-        var bot_secret = arr[1];
-        var url = arr[2];
+        var bot_id = Buffer.from(arr[0], 'base64').toString('binary');
+        var bot_secret = Buffer.from(arr[1], 'base64').toString('binary');
+        var url = Buffer.from(arr[2], 'base64').toString('binary');
+        if (!bot_id || !bot_secret || !url)
+            return null;
         return {
             bot_id: bot_id, bot_secret: bot_secret, url: url
         };
@@ -193,7 +194,7 @@ var Client = /** @class */ (function () {
         app.use(cors({
             allowedHeaders: ['X-Requested-With', 'Content-Type', 'Accept', 'x-user-token', 'Authorization', 'x-secret']
         }));
-        app.get('/', function (req, res) {
+        app.post('/', function (req, res) {
             var secret = req.headers['x-secret'];
             if (secret !== bot_secret)
                 return;
