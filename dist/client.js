@@ -196,8 +196,9 @@ var Client = /** @class */ (function () {
         }));
         app.post('/', function (req, res) {
             var secret = req.headers['x-secret'];
-            if (secret !== bot_secret)
-                return;
+            if (secret !== bot_secret) {
+                return res.send({ error: 'no secret provided' });
+            }
             EE.emit(MSG_TYPE.MESSAGE, req.body);
             res.send({ sucess: true });
         });

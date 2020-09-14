@@ -133,7 +133,9 @@ export default class Client {
         }))
         app.post('/', (req: express.Request, res: express.Response) => {
             var secret = req.headers['x-secret'];
-            if(secret!==bot_secret) return
+            if(secret!==bot_secret) {
+                return res.send({error:'no secret provided'})
+            }
             EE.emit(MSG_TYPE.MESSAGE, req.body)
             res.send({sucess:true})
         })
