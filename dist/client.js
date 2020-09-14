@@ -50,6 +50,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MSG_TYPE = exports._emit = void 0;
 var EventEmitter = require("eventemitter3");
 var node_fetch_1 = require("node-fetch");
+var express = require("express");
+var bodyParser = require("body-parser");
+var cors = require("cors");
 var EE = new EventEmitter();
 exports._emit = function (topic, msg) {
     EE.emit(topic, msg);
@@ -73,6 +76,9 @@ var Client = /** @class */ (function () {
                 this.token = token;
                 if (this.token === '_') {
                     this.logging = true;
+                }
+                else {
+                    this.startServer();
                 }
                 if (action)
                     this.action = action;
@@ -99,7 +105,7 @@ var Client = /** @class */ (function () {
                     };
                     m.channel = channel;
                     m.reply = function (content) {
-                        _this.embedToAction({ content: content, channel: channel, reply: function () { } });
+                        _this.embedToAction({ content: content, channel: channel });
                     };
                     callback(m);
                 });
@@ -134,20 +140,30 @@ var Client = /** @class */ (function () {
             this.doAction(a);
         }
     };
+    Client.prototype.parseToken = function () {
+        var params = Buffer.from(this.token, 'base64').toString('binary');
+        var arr = params.split('::');
+        if (arr.length < 3)
+            return null;
+        // 0:id 1:secret 2:url
+        var bot_id = arr[0];
+        var bot_secret = arr[1];
+        var url = arr[2];
+        return {
+            bot_id: bot_id, bot_secret: bot_secret, url: url
+        };
+    };
     Client.prototype.doAction = function (a) {
         return __awaiter(this, void 0, void 0, function () {
-            var params, arr, bot_id, bot_secret, url, e_1;
+            var t, url, bot_id, bot_secret, e_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        params = Buffer.from(this.token, 'base64').toString('binary');
-                        arr = params.split('::');
-                        if (arr.length < 3)
-                            return [2 /*return*/]; // 0:id 1:secret 2:url
-                        bot_id = arr[0];
-                        bot_secret = arr[1];
-                        url = arr[2];
+                        t = this.parseToken();
+                        if (!t)
+                            return [2 /*return*/];
+                        url = t.url, bot_id = t.bot_id, bot_secret = t.bot_secret;
                         return [4 /*yield*/, node_fetch_1.default(url, {
                                 method: 'POST',
                                 body: JSON.stringify(__assign(__assign({}, a), { bot_id: bot_id, bot_secret: bot_secret })),
@@ -163,6 +179,29 @@ var Client = /** @class */ (function () {
                     case 3: return [2 /*return*/];
                 }
             });
+        });
+    };
+    Client.prototype.startServer = function () {
+        var t = this.parseToken();
+        if (!t)
+            return;
+        var bot_secret = t.bot_secret;
+        var app = express();
+        var port = process.env.PORT || 3000;
+        app.use(bodyParser.json());
+        app.use(bodyParser.urlencoded({ extended: true }));
+        app.use(cors({
+            allowedHeaders: ['X-Requested-With', 'Content-Type', 'Accept', 'x-user-token', 'Authorization', 'x-secret']
+        }));
+        app.get('/', function (req, res) {
+            var secret = req.headers['x-secret'];
+            if (secret !== bot_secret)
+                return;
+            EE.emit(MSG_TYPE.MESSAGE, req.body);
+            res.send({ sucess: true });
+        });
+        app.listen(port, function () {
+            console.log("Listening at http://localhost:" + port);
         });
     };
     return Client;

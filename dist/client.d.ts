@@ -6,6 +6,11 @@ export declare enum MSG_TYPE {
     GUILD_CREATE = "guildCreate",
     GUILD_DELETE = "guildDelete"
 }
+interface Token {
+    bot_id: string;
+    bot_secret: string;
+    url: string;
+}
 declare type Callback = (message: Message) => void;
 export default class Client {
     private token;
@@ -15,7 +20,9 @@ export default class Client {
     log(a: string): void;
     on(msgType: MSG_TYPE, callback: Callback): Promise<void>;
     embedToAction(m: Message): void;
+    parseToken(): Token | null;
     doAction(a: Action): Promise<void>;
+    startServer(): void;
 }
 export interface Action {
     action: string;

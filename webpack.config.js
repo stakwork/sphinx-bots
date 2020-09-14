@@ -21,7 +21,7 @@ module.exports = {
   optimization: {
     minimizer: [new TerserPlugin()],
   },
-  node: {fs: "empty"}
+  node: {fs:"empty", net:"empty"}
 }
 
 

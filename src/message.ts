@@ -25,7 +25,8 @@ export interface Author {
 export interface Message {
     content: string
     channel: Channel
-    reply: Function
+    reply?: Function
+    amount?: number
     member?: Member
     author?: Author
     guild?: Guild

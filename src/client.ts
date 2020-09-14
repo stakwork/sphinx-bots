@@ -1,10 +1,13 @@
 import * as EventEmitter from 'eventemitter3'
 import { Message, Channel } from './message'
 import fetch from 'node-fetch'
+import * as express from 'express'
+import * as bodyParser from 'body-parser'
+import * as cors from 'cors'
 
 const EE = new EventEmitter()
 
-export const _emit = function(topic:string, msg:any) {
+export const _emit = function (topic: string, msg: any) {
     EE.emit(topic, msg)
 }
 
@@ -13,6 +16,12 @@ export enum MSG_TYPE {
     MESSAGE = 'message',
     GUILD_CREATE = 'guildCreate',
     GUILD_DELETE = 'guildDelete',
+}
+
+interface Token {
+    bot_id: string
+    bot_secret: string
+    url: string
 }
 
 type Callback = (message: Message) => void;
@@ -27,6 +36,8 @@ export default class Client {
         this.token = token
         if (this.token === '_') {
             this.logging = true
+        } else {
+            this.startServer()
         }
         if (action) this.action = action
     }
@@ -44,12 +55,12 @@ export default class Client {
                 id: m.channel.id,
                 send: (msg: Message) => this.embedToAction({
                     ...msg,
-                    channel:{id:m.channel.id,send:function(){}}
+                    channel: { id: m.channel.id, send: function () { } }
                 })
             }
             m.channel = channel
-            m.reply = (content:string) => {
-                this.embedToAction({content, channel, reply:function(){}})
+            m.reply = (content: string) => {
+                this.embedToAction({ content, channel })
             }
             callback(m)
         })
@@ -68,35 +79,67 @@ export default class Client {
         //     botName, chatUUID: m.channel.id,
         //     content, action: 'broadcast',
         // })
-        const a:Action = {
+        const a: Action = {
             botName, chatUUID: m.channel.id,
             content, action: 'broadcast',
         }
-        if(this.action) {
+        if (this.action) {
             this.action(a)
         } else {
             this.doAction(a)
         }
     }
 
+    parseToken() {
+        const params = Buffer.from(this.token, 'base64').toString('binary')
+        const arr = params.split('::')
+        if (arr.length < 3) return null
+         // 0:id 1:secret 2:url
+        const bot_id = arr[0]
+        const bot_secret = arr[1]
+        const url = arr[2]
+        return <Token>{
+            bot_id, bot_secret, url
+        }
+    }
+
     async doAction(a: Action) {
         try {
-            const params = Buffer.from(this.token, 'base64').toString('binary')
-            const arr = params.split('::')
-            if(arr.length<3) return // 0:id 1:secret 2:url
-            const bot_id = arr[0]
-            const bot_secret = arr[1]
-            const url = arr[2]
+            const t = this.parseToken()
+            if(!t) return
+            const {url,bot_id,bot_secret} = t
             await fetch(url, {
                 method: 'POST',
                 body: JSON.stringify({
                     ...a, bot_id, bot_secret
                 }),
-                headers: {'Content-Type': 'application/json'}
+                headers: { 'Content-Type': 'application/json' }
             })
-        } catch(e) {
-            console.log('doAction error:',e)
+        } catch (e) {
+            console.log('doAction error:', e)
         }
+    }
+
+    startServer(){
+        const t = this.parseToken()
+        if(!t) return
+        const {bot_secret} = t
+        const app = express()
+        const port = process.env.PORT || 3000
+        app.use(bodyParser.json());
+        app.use(bodyParser.urlencoded({ extended: true }));
+        app.use(cors({
+            allowedHeaders:['X-Requested-With','Content-Type','Accept','x-user-token','Authorization','x-secret']
+        }))
+        app.get('/', (req: express.Request, res: express.Response) => {
+            var secret = req.headers['x-secret'];
+            if(secret!==bot_secret) return
+            EE.emit(MSG_TYPE.MESSAGE, req.body)
+            res.send({sucess:true})
+        })
+        app.listen(port, () => {
+            console.log(`Listening at http://localhost:${port}`)
+        })
     }
 
 }
