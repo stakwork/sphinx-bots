@@ -115,10 +115,10 @@ var Client = /** @class */ (function () {
     };
     Client.prototype.embedToAction = function (m) {
         var content = '';
-        var botName = 'Bot';
+        var bot_name = 'Bot';
         if (m.embed && m.embed.html) {
             content = m.embed.html;
-            botName = m.embed.author;
+            bot_name = m.embed.author;
         }
         else if (typeof m.content === 'string') {
             content = m.content;
@@ -128,8 +128,8 @@ var Client = /** @class */ (function () {
         //     content, action: 'broadcast',
         // })
         var a = {
-            botName: botName,
-            chatUUID: m.channel.id,
+            bot_name: bot_name,
+            chat_uuid: m.channel.id,
             content: content,
             action: 'broadcast',
         };

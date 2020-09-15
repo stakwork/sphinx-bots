@@ -26,8 +26,8 @@ export default class Client {
 }
 export interface Action {
     action: string;
-    chatUUID: string;
-    botName?: string;
+    chat_uuid: string;
+    bot_name?: string;
     amount?: number;
     pubkey?: string;
     content?: string;

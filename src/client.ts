@@ -68,10 +68,10 @@ export default class Client {
 
     embedToAction(m: Message) {
         let content = ''
-        let botName = 'Bot'
+        let bot_name = 'Bot'
         if (m.embed && m.embed.html) {
             content = m.embed.html
-            botName = m.embed.author
+            bot_name = m.embed.author
         } else if (typeof m.content === 'string') {
             content = m.content
         }
@@ -80,7 +80,7 @@ export default class Client {
         //     content, action: 'broadcast',
         // })
         const a: Action = {
-            botName, chatUUID: m.channel.id,
+            bot_name, chat_uuid: m.channel.id,
             content, action: 'broadcast',
         }
         if (this.action) {
@@ -149,8 +149,8 @@ export default class Client {
 
 export interface Action {
     action: string
-    chatUUID: string
-    botName?: string
+    chat_uuid: string
+    bot_name?: string
     amount?: number
     pubkey?: string
     content?: string
