@@ -67,7 +67,7 @@ var MSG_TYPE;
 var Client = /** @class */ (function () {
     function Client() {
         this.token = '';
-        this.action = function () { }; // post to webhook
+        this.action = null; // post to webhook
         this.logging = false;
     }
     Client.prototype.login = function (token, action) {
@@ -98,7 +98,7 @@ var Client = /** @class */ (function () {
                 if (!this.token)
                     return [2 /*return*/];
                 EE.on(msgType, function (m) {
-                    // this.log('===> EE.on received' + msgType + 'CONTENT:' + JSON.stringify(m))
+                    _this.log('===> EE.on received' + msgType + 'CONTENT:' + JSON.stringify(m));
                     var channel = {
                         id: m.channel.id,
                         send: function (msg) { return _this.embedToAction(__assign(__assign({}, msg), { channel: { id: m.channel.id, send: function () { } } })); }

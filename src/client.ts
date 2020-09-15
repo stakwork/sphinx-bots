@@ -29,7 +29,7 @@ type Callback = (message: Message) => void;
 export default class Client {
 
     private token: string = ''
-    private action: Function = function () { } // post to webhook
+    private action: Function | null = null // post to webhook
     private logging: boolean = false
 
     async login(token: string, action?: Function) {
@@ -50,7 +50,7 @@ export default class Client {
     async on(msgType: MSG_TYPE, callback: Callback) {
         if (!this.token) return
         EE.on(msgType, m => {
-            // this.log('===> EE.on received' + msgType + 'CONTENT:' + JSON.stringify(m))
+            this.log('===> EE.on received' + msgType + 'CONTENT:' + JSON.stringify(m))
             const channel = <Channel>{
                 id: m.channel.id,
                 send: (msg: Message) => this.embedToAction({
