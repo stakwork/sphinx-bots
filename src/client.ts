@@ -14,8 +14,13 @@ export const _emit = function (topic: string, msg: any) {
 export enum MSG_TYPE {
     READY = 'ready',
     MESSAGE = 'message',
+    INSTALL = 'install',
+    UNINSTALL = 'uninstall',
+    RESUMED = 'resumed',
     GUILD_CREATE = 'guildCreate',
     GUILD_DELETE = 'guildDelete',
+    MESSAGE_CREATE = 'message',
+    RATE_LIMIT = 'rateLimit',
 }
 
 interface Token {
@@ -50,7 +55,7 @@ export default class Client {
     async on(msgType: MSG_TYPE, callback: Callback) {
         if (!this.token) return
         EE.on(msgType, m => {
-            this.log('===> EE.on received' + msgType + 'CONTENT:' + JSON.stringify(m))
+            // this.log('===> EE.on received' + msgType + 'CONTENT:' + JSON.stringify(m))
             const channel = <Channel>{
                 id: m.channel.id,
                 send: (msg: Message) => this.embedToAction({
@@ -132,12 +137,26 @@ export default class Client {
         app.use(cors({
             allowedHeaders:['X-Requested-With','Content-Type','Accept','x-user-token','Authorization','x-secret']
         }))
-        app.post('/', (req: express.Request, res: express.Response) => {
+        app.use(function (req, res, next) {
             var secret = req.headers['x-secret'];
-            if(secret!==bot_secret) {
-                return res.send({error:'no secret provided'})
-            }
+            if(!secret) return res.status(401).send({error:'Not Authorized'})
+            if(secret!==bot_secret) return res.status(401).send({error:'Not Authorized'})
+            next()
+        })
+        app.post('/', (req: express.Request, res: express.Response) => {
             EE.emit(MSG_TYPE.MESSAGE, req.body)
+            res.send({sucess:true})
+        })
+        app.post('/:route', (req: express.Request, res: express.Response) => {
+            const route = req.params.route
+            let ok = ''
+            Object.values(MSG_TYPE).forEach(v=>{
+                if(v===route) {
+                    ok = route
+                }
+            })
+            if(!ok) return res.status(404).send({error:'Not Found'})
+            EE.emit(ok, req.body)
             res.send({sucess:true})
         })
         app.listen(port, () => {

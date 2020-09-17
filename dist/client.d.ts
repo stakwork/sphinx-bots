@@ -3,8 +3,13 @@ export declare const _emit: (topic: string, msg: any) => void;
 export declare enum MSG_TYPE {
     READY = "ready",
     MESSAGE = "message",
+    INSTALL = "install",
+    UNINSTALL = "uninstall",
+    RESUMED = "resumed",
     GUILD_CREATE = "guildCreate",
-    GUILD_DELETE = "guildDelete"
+    GUILD_DELETE = "guildDelete",
+    MESSAGE_CREATE = "message",
+    RATE_LIMIT = "rateLimit"
 }
 interface Token {
     bot_id: string;

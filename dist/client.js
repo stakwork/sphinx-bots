@@ -61,8 +61,13 @@ var MSG_TYPE;
 (function (MSG_TYPE) {
     MSG_TYPE["READY"] = "ready";
     MSG_TYPE["MESSAGE"] = "message";
+    MSG_TYPE["INSTALL"] = "install";
+    MSG_TYPE["UNINSTALL"] = "uninstall";
+    MSG_TYPE["RESUMED"] = "resumed";
     MSG_TYPE["GUILD_CREATE"] = "guildCreate";
     MSG_TYPE["GUILD_DELETE"] = "guildDelete";
+    MSG_TYPE["MESSAGE_CREATE"] = "message";
+    MSG_TYPE["RATE_LIMIT"] = "rateLimit";
 })(MSG_TYPE = exports.MSG_TYPE || (exports.MSG_TYPE = {}));
 var Client = /** @class */ (function () {
     function Client() {
@@ -98,7 +103,7 @@ var Client = /** @class */ (function () {
                 if (!this.token)
                     return [2 /*return*/];
                 EE.on(msgType, function (m) {
-                    _this.log('===> EE.on received' + msgType + 'CONTENT:' + JSON.stringify(m));
+                    // this.log('===> EE.on received' + msgType + 'CONTENT:' + JSON.stringify(m))
                     var channel = {
                         id: m.channel.id,
                         send: function (msg) { return _this.embedToAction(__assign(__assign({}, msg), { channel: { id: m.channel.id, send: function () { } } })); }
@@ -196,12 +201,29 @@ var Client = /** @class */ (function () {
         app.use(cors({
             allowedHeaders: ['X-Requested-With', 'Content-Type', 'Accept', 'x-user-token', 'Authorization', 'x-secret']
         }));
-        app.post('/', function (req, res) {
+        app.use(function (req, res, next) {
             var secret = req.headers['x-secret'];
-            if (secret !== bot_secret) {
-                return res.send({ error: 'no secret provided' });
-            }
+            if (!secret)
+                return res.status(401).send({ error: 'Not Authorized' });
+            if (secret !== bot_secret)
+                return res.status(401).send({ error: 'Not Authorized' });
+            next();
+        });
+        app.post('/', function (req, res) {
             EE.emit(MSG_TYPE.MESSAGE, req.body);
+            res.send({ sucess: true });
+        });
+        app.post('/:route', function (req, res) {
+            var route = req.params.route;
+            var ok = '';
+            Object.values(MSG_TYPE).forEach(function (v) {
+                if (v === route) {
+                    ok = route;
+                }
+            });
+            if (!ok)
+                return res.status(404).send({ error: 'Not Found' });
+            EE.emit(ok, req.body);
             res.send({ sucess: true });
         });
         app.listen(port, function () {

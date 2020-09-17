@@ -56,7 +56,7 @@ var MessageEmbed = /** @class */ (function () {
         if (this.fields && this.fields.length) {
             this.fields.forEach(function (f) {
                 if (f.name && f.value) {
-                    var wrapStyle = "font-size:13px;margin:5px 0;" + (f.inline ? 'display:flex;align-items:center;' : '');
+                    var wrapStyle = "font-size:13px;margin:5px 0;" + (f.inline ? 'display:flex;flex-direction:row;align-items:center;' : '');
                     var valStyle = "" + (f.color && isColorString(f.color) ? 'color:' + f.color + ';' : '');
                     h += "<div style=\"" + wrapStyle + "\">";
                     h += "<div style=\"opacity:0.7;margin-right:8px;\">" + f.name + "</div>";

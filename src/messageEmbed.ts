@@ -70,7 +70,7 @@ export default class MessageEmbed {
         if(this.fields && this.fields.length) {
             this.fields.forEach(f=>{
                 if(f.name && f.value) {
-                    const wrapStyle = `font-size:13px;margin:5px 0;${f.inline?'display:flex;align-items:center;':''}`
+                    const wrapStyle = `font-size:13px;margin:5px 0;${f.inline?'display:flex;flex-direction:row;align-items:center;':''}`
                     const valStyle = `${f.color && isColorString(f.color) ? 'color:'+f.color+';':''}`
                     h += `<div style="${wrapStyle}">`
                     h += `<div style="opacity:0.7;margin-right:8px;">${f.name}</div>`
