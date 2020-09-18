@@ -86,7 +86,7 @@ export default class MessageEmbed {
             }
         }
         h += '</div>'
-        h += '<!-- sphinx:test -->'
+        // h += '<!-- sphinx:test -->'
         this.html = sanitize(h)
         return this
     }
