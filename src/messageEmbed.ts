@@ -1,5 +1,4 @@
 import * as dompurify from 'isomorphic-dompurify'
-const sanitizer = dompurify.sanitize;
 
 interface Field {
     name: string
@@ -88,10 +87,17 @@ export default class MessageEmbed {
         }
         h += '</div>'
         h += '<!-- sphinx:test -->'
-        this.html = sanitizer(h)
+        this.html = sanitize(h)
         return this
     }
 
+}
+
+function sanitize(s:string){
+    const dirty = s.replace(/(<!--)/g,'<comment>').replace(/(-->)/g,'</comment>');
+    var config = { ADD_TAGS: ['comment'] };
+    var clean = dompurify.sanitize(dirty, config);
+    return clean.replace(/(<comment>)/g,'<!--').replace(/(<\/comment>)/g,'-->');
 }
 
 function isColorString(color:string):Boolean{

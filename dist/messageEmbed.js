@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var dompurify = require("isomorphic-dompurify");
-var sanitizer = dompurify.sanitize;
 var MessageEmbed = /** @class */ (function () {
     function MessageEmbed() {
         this.author = '';
@@ -75,12 +74,18 @@ var MessageEmbed = /** @class */ (function () {
         }
         h += '</div>';
         h += '<!-- sphinx:test -->';
-        this.html = sanitizer(h);
+        this.html = sanitize(h);
         return this;
     };
     return MessageEmbed;
 }());
 exports.default = MessageEmbed;
+function sanitize(s) {
+    var dirty = s.replace(/(<!--)/g, '<comment>').replace(/(-->)/g, '</comment>');
+    var config = { ADD_TAGS: ['comment'] };
+    var clean = dompurify.sanitize(dirty, config);
+    return clean.replace(/(<comment>)/g, '<!--').replace(/(<\/comment>)/g, '-->');
+}
 function isColorString(color) {
     return color ? true : false;
 }
