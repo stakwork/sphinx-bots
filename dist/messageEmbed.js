@@ -74,6 +74,7 @@ var MessageEmbed = /** @class */ (function () {
             }
         }
         h += '</div>';
+        h += '<!-- sphinx:test -->';
         this.html = sanitizer(h);
         return this;
     };
