@@ -65,7 +65,11 @@ export default class Client {
             }
             m.channel = channel
             m.reply = (content: string) => {
-                this.embedToAction({ content, channel })
+                this.embedToAction({ 
+                    content, 
+                    channel,
+                    member:{roles:[]}
+                })
             }
             callback(m)
         })

@@ -7,8 +7,8 @@ interface Role {
     name: string;
 }
 export interface Member {
-    id: string;
-    nickname: string;
+    id?: string;
+    nickname?: string;
     roles: Role[];
 }
 export interface Guild {
@@ -20,9 +20,9 @@ export interface Author {
 export interface Message {
     content: string;
     channel: Channel;
+    member: Member;
     reply?: Function;
     amount?: number;
-    member?: Member;
     author?: Author;
     guild?: Guild;
     webhookID?: string;

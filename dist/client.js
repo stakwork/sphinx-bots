@@ -110,7 +110,11 @@ var Client = /** @class */ (function () {
                     };
                     m.channel = channel;
                     m.reply = function (content) {
-                        _this.embedToAction({ content: content, channel: channel });
+                        _this.embedToAction({
+                            content: content,
+                            channel: channel,
+                            member: { roles: [] }
+                        });
                     };
                     callback(m);
                 });
