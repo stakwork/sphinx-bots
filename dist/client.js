@@ -69,11 +69,27 @@ var MSG_TYPE;
     MSG_TYPE["MESSAGE_CREATE"] = "message";
     MSG_TYPE["RATE_LIMIT"] = "rateLimit";
 })(MSG_TYPE = exports.MSG_TYPE || (exports.MSG_TYPE = {}));
+var TRIBE_UUID_STRING_LENGTH = 92;
 var Client = /** @class */ (function () {
     function Client() {
+        var _this = this;
         this.token = '';
         this.action = null; // post to webhook
         this.logging = false;
+        this.channels = {
+            cache: {
+                get: function (id) {
+                    if (!id)
+                        return null;
+                    if (id.length !== TRIBE_UUID_STRING_LENGTH)
+                        return null;
+                    return {
+                        id: id,
+                        send: function (msg) { return _this.embedToAction(__assign(__assign({}, msg), { channel: { id: id, send: function () { } } })); }
+                    };
+                }
+            }
+        };
     }
     Client.prototype.login = function (token, action) {
         return __awaiter(this, void 0, void 0, function () {

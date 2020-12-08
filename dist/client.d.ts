@@ -1,4 +1,4 @@
-import { Message } from './message';
+import { Message, Channel } from './message';
 export declare const _emit: (topic: string, msg: any) => void;
 export declare enum MSG_TYPE {
     READY = "ready",
@@ -17,10 +17,17 @@ interface Token {
     url: string;
 }
 declare type Callback = (message: Message) => void;
+interface Cache {
+    get: (id: string) => Channel | null;
+}
+interface Channels {
+    cache: Cache;
+}
 export default class Client {
     private token;
     private action;
     private logging;
+    channels: Channels;
     login(token: string, action?: Function): Promise<void>;
     log(a: string): void;
     on(msgType: MSG_TYPE, callback: Callback): Promise<void>;

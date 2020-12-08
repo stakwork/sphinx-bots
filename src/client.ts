@@ -23,6 +23,8 @@ export enum MSG_TYPE {
     RATE_LIMIT = 'rateLimit',
 }
 
+const TRIBE_UUID_STRING_LENGTH = 92
+
 interface Token {
     bot_id: string
     bot_secret: string
@@ -31,11 +33,34 @@ interface Token {
 
 type Callback = (message: Message) => void;
 
+interface Cache {
+    get: (id:string) => Channel|null
+}
+interface Channels {
+    cache: Cache
+}
+
 export default class Client {
 
     private token: string = ''
     private action: Function | null = null // post to webhook
     private logging: boolean = false
+
+    public channels = <Channels>{
+        cache: <Cache>{
+            get: (id:string) => {
+                if(!id) return null
+                if(id.length !== TRIBE_UUID_STRING_LENGTH) return null
+                return <Channel>{
+                    id,
+                    send:(msg: Message) => this.embedToAction({
+                        ...msg,
+                        channel: { id, send: function () { } }
+                    })
+                }
+            }
+        }
+    }
 
     async login(token: string, action?: Function) {
         this.token = token
