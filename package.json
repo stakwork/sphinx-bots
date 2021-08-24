@@ -1,6 +1,6 @@
 {
   "name": "sphinx-bot",
-  "version": "0.2.19",
+  "version": "0.2.32",
   "description": "Sphinx chat bots",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -31,6 +31,7 @@
     "eventemitter3": "^4.0.7",
     "express": "^4.17.1",
     "isomorphic-dompurify": "^0.6.0",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "short-uuid": "^4.2.0"
   }
 }

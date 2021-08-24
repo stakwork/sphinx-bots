@@ -1,4 +1,4 @@
-import { Message, Channel } from './message';
+import { Message, Msg, Channel } from "./message";
 export declare const _emit: (topic: string, msg: any) => void;
 export declare enum MSG_TYPE {
     READY = "ready",
@@ -16,7 +16,7 @@ interface Token {
     bot_secret: string;
     url: string;
 }
-declare type Callback = (message: Message) => void;
+declare type Callback = (message: Msg) => void;
 interface Cache {
     get: (id: string) => Channel | null;
 }
@@ -28,7 +28,7 @@ export default class Client {
     private action;
     private logging;
     channels: Channels;
-    login(token: string, action?: Function): Promise<void>;
+    login(token: string, action?: Function, logging?: boolean): Promise<void>;
     log(a: string): void;
     on(msgType: MSG_TYPE, callback: Callback): Promise<void>;
     embedToAction(m: Message): void;
@@ -43,5 +43,7 @@ export interface Action {
     amount?: number;
     pubkey?: string;
     content?: string;
+    msg_uuid: string;
+    reply_uuid?: string;
 }
 export {};

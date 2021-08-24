@@ -3,14 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var dompurify = require("isomorphic-dompurify");
 var MessageEmbed = /** @class */ (function () {
     function MessageEmbed() {
-        this.author = '';
-        this.title = '';
-        this.color = '';
-        this.description = '';
-        this.thumbnail = '';
-        this.html = '';
+        this.author = "";
+        this.title = "";
+        this.color = "";
+        this.description = "";
+        this.thumbnail = "";
+        this.html = "";
         this.fields = [];
-        this.image = '';
+        this.image = "";
     }
     MessageEmbed.prototype.setTitle = function (title) {
         this.title = title;
@@ -55,8 +55,10 @@ var MessageEmbed = /** @class */ (function () {
         if (this.fields && this.fields.length) {
             this.fields.forEach(function (f) {
                 if (f.name && f.value) {
-                    var wrapStyle = "font-size:13px;margin:5px 0;" + (f.inline ? 'display:flex;flex-direction:row;align-items:center;' : '');
-                    var valStyle = "" + (f.color && isColorString(f.color) ? 'color:' + f.color + ';' : '');
+                    var wrapStyle = "font-size:13px;margin:5px 0;" + (f.inline
+                        ? "display:flex;flex-direction:row;align-items:center;"
+                        : "");
+                    var valStyle = "" + (f.color && isColorString(f.color) ? "color:" + f.color + ";" : "");
                     h += "<div style=\"" + wrapStyle + "\">";
                     h += "<div style=\"opacity:0.7;margin-right:8px;\">" + f.name + "</div>";
                     h += "<div style=\"" + valStyle + "\">" + f.value + "</div>";
@@ -65,14 +67,21 @@ var MessageEmbed = /** @class */ (function () {
             });
         }
         if (this.thumbnail) {
-            if (this.thumbnail.startsWith('<svg') && this.thumbnail.endsWith('</svg>')) {
-                h += '<div style="position:absolute;top:0;right:0;">' + this.thumbnail + '</div>';
+            if (this.thumbnail.startsWith("<svg") &&
+                this.thumbnail.endsWith("</svg>")) {
+                h +=
+                    '<div style="position:absolute;top:0;right:0;">' +
+                        this.thumbnail +
+                        "</div>";
             }
             else {
-                h += '<img style="position:absolute;top:0;right:0;height:16px;width:16px;" src="' + this.thumbnail + '" />';
+                h +=
+                    '<img style="position:absolute;top:0;right:0;height:16px;width:16px;" src="' +
+                        this.thumbnail +
+                        '" />';
             }
         }
-        h += '</div>';
+        h += "</div>";
         // h += '<!-- sphinx:test -->'
         this.html = sanitize(h);
         return this;
@@ -81,10 +90,12 @@ var MessageEmbed = /** @class */ (function () {
 }());
 exports.default = MessageEmbed;
 function sanitize(s) {
-    var dirty = s.replace(/(<!--)/g, '<comment>').replace(/(-->)/g, '</comment>');
-    var config = { ADD_TAGS: ['comment'] };
+    var dirty = s
+        .replace(/(<!--)/g, "<comment>")
+        .replace(/(-->)/g, "</comment>");
+    var config = { ADD_TAGS: ["comment"] };
     var clean = dompurify.sanitize(dirty, config);
-    return clean.replace(/(<comment>)/g, '<!--').replace(/(<\/comment>)/g, '-->');
+    return clean.replace(/(<comment>)/g, "<!--").replace(/(<\/comment>)/g, "-->");
 }
 function isColorString(color) {
     return color ? true : false;

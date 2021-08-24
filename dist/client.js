@@ -53,6 +53,7 @@ var node_fetch_1 = require("node-fetch");
 var express = require("express");
 var bodyParser = require("body-parser");
 var cors = require("cors");
+var short = require("short-uuid");
 var EE = new EventEmitter();
 exports._emit = function (topic, msg) {
     EE.emit(topic, msg);
@@ -73,7 +74,7 @@ var TRIBE_UUID_STRING_LENGTH = 92;
 var Client = /** @class */ (function () {
     function Client() {
         var _this = this;
-        this.token = '';
+        this.token = "";
         this.action = null; // post to webhook
         this.logging = false;
         this.channels = {
@@ -85,20 +86,24 @@ var Client = /** @class */ (function () {
                         return null;
                     return {
                         id: id,
-                        send: function (msg) { return _this.embedToAction(__assign(__assign({}, msg), { channel: { id: id, send: function () { } } })); }
+                        send: function (msg) {
+                            return _this.embedToAction(__assign(__assign({}, msg), { channel: { id: id, send: function () { } } }));
+                        },
                     };
-                }
-            }
+                },
+            },
         };
     }
-    Client.prototype.login = function (token, action) {
+    Client.prototype.login = function (token, action, logging) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 this.token = token;
-                if (this.token === '_') {
+                if (this.token === "_") {
                     this.logging = true;
                 }
                 else {
+                    if (logging)
+                        this.logging = true;
                     this.startServer();
                 }
                 if (action)
@@ -122,15 +127,21 @@ var Client = /** @class */ (function () {
                     // this.log('===> EE.on received' + msgType + 'CONTENT:' + JSON.stringify(m))
                     var channel = {
                         id: m.channel.id,
-                        send: function (msg) { return _this.embedToAction(__assign(__assign({}, msg), { channel: { id: m.channel.id, send: function () { } } })); }
+                        send: function (msg) {
+                            return _this.embedToAction(__assign(__assign({}, msg), { channel: { id: m.channel.id, send: function () { } } }));
+                        },
                     };
                     m.channel = channel;
                     m.reply = function (content) {
+                        var uuid = short.generate();
                         _this.embedToAction({
+                            id: uuid,
+                            reply_id: m.id,
                             content: content,
                             channel: channel,
-                            member: { roles: [] }
+                            member: { roles: [] },
                         });
+                        return uuid;
                     };
                     callback(m);
                 });
@@ -139,24 +150,32 @@ var Client = /** @class */ (function () {
         });
     };
     Client.prototype.embedToAction = function (m) {
-        var content = '';
-        var bot_name = 'Bot';
+        var content = "";
+        var bot_name = "Bot";
         if (m.embed && m.embed.html) {
             content = m.embed.html;
             bot_name = m.embed.author;
         }
-        else if (typeof m.content === 'string') {
+        else if (typeof m.content === "string") {
             content = m.content;
         }
-        // console.log(<Action>{
-        //     botName, chatUUID: m.channel.id,
-        //     content, action: 'broadcast',
-        // })
+        if (this.logging) {
+            console.log({
+                msg_uuid: m.id || short.generate(),
+                bot_name: bot_name,
+                chat_uuid: m.channel.id,
+                reply_uuid: m.reply_id || "",
+                content: content,
+                action: "broadcast",
+            });
+        }
         var a = {
+            msg_uuid: m.id || short.generate(),
             bot_name: bot_name,
             chat_uuid: m.channel.id,
+            reply_uuid: m.reply_id || "",
             content: content,
-            action: 'broadcast',
+            action: "broadcast",
         };
         if (this.action) {
             this.action(a);
@@ -168,17 +187,19 @@ var Client = /** @class */ (function () {
     Client.prototype.parseToken = function () {
         if (!this.token)
             return;
-        var arr = this.token.split('.');
+        var arr = this.token.split(".");
         if (arr.length < 3)
             return null;
         // 0:id 1:secret 2:url
-        var bot_id = Buffer.from(arr[0], 'base64').toString('binary');
-        var bot_secret = Buffer.from(arr[1], 'base64').toString('binary');
-        var url = Buffer.from(arr[2], 'base64').toString('binary');
+        var bot_id = Buffer.from(arr[0], "base64").toString("binary");
+        var bot_secret = Buffer.from(arr[1], "base64").toString("binary");
+        var url = Buffer.from(arr[2], "base64").toString("binary");
         if (!bot_id || !bot_secret || !url)
             return null;
         return {
-            bot_id: bot_id, bot_secret: bot_secret, url: url
+            bot_id: bot_id,
+            bot_secret: bot_secret,
+            url: url,
         };
     };
     Client.prototype.doAction = function (a) {
@@ -193,16 +214,17 @@ var Client = /** @class */ (function () {
                             return [2 /*return*/];
                         url = t.url, bot_id = t.bot_id, bot_secret = t.bot_secret;
                         return [4 /*yield*/, node_fetch_1.default(url, {
-                                method: 'POST',
-                                body: JSON.stringify(__assign(__assign({}, a), { bot_id: bot_id, bot_secret: bot_secret })),
-                                headers: { 'Content-Type': 'application/json' }
+                                method: "POST",
+                                body: JSON.stringify(__assign(__assign({}, a), { bot_id: bot_id,
+                                    bot_secret: bot_secret })),
+                                headers: { "Content-Type": "application/json" },
                             })];
                     case 1:
                         _a.sent();
                         return [3 /*break*/, 3];
                     case 2:
                         e_1 = _a.sent();
-                        console.log('doAction error:', e_1);
+                        console.log("doAction error:", e_1);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
@@ -219,30 +241,37 @@ var Client = /** @class */ (function () {
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: true }));
         app.use(cors({
-            allowedHeaders: ['X-Requested-With', 'Content-Type', 'Accept', 'x-user-token', 'Authorization', 'x-secret']
+            allowedHeaders: [
+                "X-Requested-With",
+                "Content-Type",
+                "Accept",
+                "x-user-token",
+                "Authorization",
+                "x-secret",
+            ],
         }));
         app.use(function (req, res, next) {
-            var secret = req.headers['x-secret'];
+            var secret = req.headers["x-secret"];
             if (!secret)
-                return res.status(401).send({ error: 'Not Authorized' });
+                return res.status(401).send({ error: "Not Authorized" });
             if (secret !== bot_secret)
-                return res.status(401).send({ error: 'Not Authorized' });
+                return res.status(401).send({ error: "Not Authorized" });
             next();
         });
-        app.post('/', function (req, res) {
+        app.post("/", function (req, res) {
             EE.emit(MSG_TYPE.MESSAGE, req.body);
             res.send({ sucess: true });
         });
-        app.post('/:route', function (req, res) {
+        app.post("/:route", function (req, res) {
             var route = req.params.route;
-            var ok = '';
+            var ok = "";
             Object.values(MSG_TYPE).forEach(function (v) {
                 if (v === route) {
                     ok = route;
                 }
             });
             if (!ok)
-                return res.status(404).send({ error: 'Not Found' });
+                return res.status(404).send({ error: "Not Found" });
             EE.emit(ok, req.body);
             res.send({ sucess: true });
         });
