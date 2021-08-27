@@ -1,8 +1,8 @@
 import MessageEmbed from "./messageEmbed";
 export interface Channel {
     id: string;
-    send: Function;
-    pay: Function;
+    send: (m: Message) => void;
+    pay: (m: Message) => void;
 }
 interface Role {
     name: string;
