@@ -37,10 +37,18 @@ interface Token {
 type Callback = (message: Msg) => void;
 
 interface Cache {
-  get: (id: string) => Channel | null;
+  get: (id: string) => Channel;
 }
 interface Channels {
   cache: Cache;
+}
+
+function emptyChan(id: string) {
+  return <Channel>{
+    id,
+    send: function () {},
+    pay: function () {},
+  };
 }
 
 export default class Client {
@@ -56,13 +64,13 @@ export default class Client {
           send: (msg: Message) =>
             this.embedToAction({
               ...msg,
-              channel: { id, send: function () {} },
+              channel: emptyChan(id),
             }),
           pay: (msg: Message) =>
             this.embedToAction(
               {
                 ...msg,
-                channel: { id, send: function () {} },
+                channel: emptyChan(id),
               },
               "pay"
             ),
@@ -96,8 +104,16 @@ export default class Client {
         send: (msg: Message) =>
           this.embedToAction({
             ...msg,
-            channel: { id: m.channel.id, send: function () {} },
+            channel: emptyChan(m.channel.id),
           }),
+        pay: (msg: Message) =>
+          this.embedToAction(
+            {
+              ...msg,
+              channel: emptyChan(m.channel.id),
+            },
+            "pay"
+          ),
       };
       m.channel = channel;
       m.reply = (content: string) => {

@@ -2,6 +2,7 @@ import MessageEmbed from "./messageEmbed";
 export interface Channel {
     id: string;
     send: Function;
+    pay: Function;
 }
 interface Role {
     name: string;

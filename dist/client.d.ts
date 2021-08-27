@@ -19,7 +19,7 @@ interface Token {
 }
 declare type Callback = (message: Msg) => void;
 interface Cache {
-    get: (id: string) => Channel | null;
+    get: (id: string) => Channel;
 }
 interface Channels {
     cache: Cache;

@@ -70,6 +70,13 @@ var MSG_TYPE;
     MSG_TYPE["MESSAGE_CREATE"] = "message";
     MSG_TYPE["RATE_LIMIT"] = "rateLimit";
 })(MSG_TYPE = exports.MSG_TYPE || (exports.MSG_TYPE = {}));
+function emptyChan(id) {
+    return {
+        id: id,
+        send: function () { },
+        pay: function () { },
+    };
+}
 var Client = /** @class */ (function () {
     function Client() {
         var _this = this;
@@ -82,10 +89,10 @@ var Client = /** @class */ (function () {
                     return {
                         id: id,
                         send: function (msg) {
-                            return _this.embedToAction(__assign(__assign({}, msg), { channel: { id: id, send: function () { } } }));
+                            return _this.embedToAction(__assign(__assign({}, msg), { channel: emptyChan(id) }));
                         },
                         pay: function (msg) {
-                            return _this.embedToAction(__assign(__assign({}, msg), { channel: { id: id, send: function () { } } }), "pay");
+                            return _this.embedToAction(__assign(__assign({}, msg), { channel: emptyChan(id) }), "pay");
                         },
                     };
                 },
@@ -126,7 +133,10 @@ var Client = /** @class */ (function () {
                     var channel = {
                         id: m.channel.id,
                         send: function (msg) {
-                            return _this.embedToAction(__assign(__assign({}, msg), { channel: { id: m.channel.id, send: function () { } } }));
+                            return _this.embedToAction(__assign(__assign({}, msg), { channel: emptyChan(m.channel.id) }));
+                        },
+                        pay: function (msg) {
+                            return _this.embedToAction(__assign(__assign({}, msg), { channel: emptyChan(m.channel.id) }), "pay");
                         },
                     };
                     m.channel = channel;
