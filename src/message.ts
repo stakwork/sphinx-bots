@@ -25,6 +25,7 @@ export interface Author {
 export interface Message {
   id?: string;
   reply_id?: string;
+  recipient_id?: string;
   content: string;
   channel: Channel;
   member: Member;
@@ -40,6 +41,7 @@ export interface Message {
 export interface Msg {
   id: string;
   reply_id?: string;
+  recipient_id?: string;
   content: string;
   channel: Channel;
   member: Member;

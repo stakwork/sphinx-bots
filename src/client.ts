@@ -24,7 +24,9 @@ export enum MSG_TYPE {
   RATE_LIMIT = "rateLimit",
 }
 
-const TRIBE_UUID_STRING_LENGTH = 92;
+type actionType = "broadcast" | "pay";
+
+// const TRIBE_UUID_STRING_LENGTH = 92;
 
 interface Token {
   bot_id: string;
@@ -49,8 +51,6 @@ export default class Client {
   public channels = <Channels>{
     cache: <Cache>{
       get: (id: string) => {
-        if (!id) return null;
-        if (id.length !== TRIBE_UUID_STRING_LENGTH) return null;
         return <Channel>{
           id,
           send: (msg: Message) =>
@@ -58,6 +58,14 @@ export default class Client {
               ...msg,
               channel: { id, send: function () {} },
             }),
+          pay: (msg: Message) =>
+            this.embedToAction(
+              {
+                ...msg,
+                channel: { id, send: function () {} },
+              },
+              "pay"
+            ),
         };
       },
     },
@@ -107,7 +115,7 @@ export default class Client {
     });
   }
 
-  embedToAction(m: Message) {
+  embedToAction(m: Message, actionType: actionType = "broadcast") {
     let content = "";
     let bot_name = "Bot";
     if (m.embed && m.embed.html) {
@@ -116,24 +124,20 @@ export default class Client {
     } else if (typeof m.content === "string") {
       content = m.content;
     }
-    if (this.logging) {
-      console.log(<Action>{
-        msg_uuid: m.id || short.generate(),
-        bot_name,
-        chat_uuid: m.channel.id,
-        reply_uuid: m.reply_id || "",
-        content,
-        action: "broadcast",
-      });
-    }
     const a: Action = {
       msg_uuid: m.id || short.generate(),
       bot_name,
       chat_uuid: m.channel.id,
       reply_uuid: m.reply_id || "",
       content,
-      action: "broadcast",
+      action: actionType,
     };
+    if (actionType === "pay" && m.recipient_id) {
+      a.recipient_id = m.recipient_id;
+    }
+    if (this.logging) {
+      console.log("===>", a);
+    }
     if (this.action) {
       this.action(a);
     } else {
@@ -234,4 +238,5 @@ export interface Action {
   content?: string;
   msg_uuid: string;
   reply_uuid?: string;
+  recipient_id?: string;
 }

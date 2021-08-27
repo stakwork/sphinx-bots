@@ -11,6 +11,7 @@ export declare enum MSG_TYPE {
     MESSAGE_CREATE = "message",
     RATE_LIMIT = "rateLimit"
 }
+declare type actionType = "broadcast" | "pay";
 interface Token {
     bot_id: string;
     bot_secret: string;
@@ -31,7 +32,7 @@ export default class Client {
     login(token: string, action?: Function, logging?: boolean): Promise<void>;
     log(a: string): void;
     on(msgType: MSG_TYPE, callback: Callback): Promise<void>;
-    embedToAction(m: Message): void;
+    embedToAction(m: Message, actionType?: actionType): void;
     parseToken(): Token | null | undefined;
     doAction(a: Action): Promise<void>;
     startServer(): void;
@@ -45,5 +46,6 @@ export interface Action {
     content?: string;
     msg_uuid: string;
     reply_uuid?: string;
+    recipient_id?: string;
 }
 export {};

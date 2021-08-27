@@ -70,7 +70,6 @@ var MSG_TYPE;
     MSG_TYPE["MESSAGE_CREATE"] = "message";
     MSG_TYPE["RATE_LIMIT"] = "rateLimit";
 })(MSG_TYPE = exports.MSG_TYPE || (exports.MSG_TYPE = {}));
-var TRIBE_UUID_STRING_LENGTH = 92;
 var Client = /** @class */ (function () {
     function Client() {
         var _this = this;
@@ -80,14 +79,13 @@ var Client = /** @class */ (function () {
         this.channels = {
             cache: {
                 get: function (id) {
-                    if (!id)
-                        return null;
-                    if (id.length !== TRIBE_UUID_STRING_LENGTH)
-                        return null;
                     return {
                         id: id,
                         send: function (msg) {
                             return _this.embedToAction(__assign(__assign({}, msg), { channel: { id: id, send: function () { } } }));
+                        },
+                        pay: function (msg) {
+                            return _this.embedToAction(__assign(__assign({}, msg), { channel: { id: id, send: function () { } } }), "pay");
                         },
                     };
                 },
@@ -149,7 +147,8 @@ var Client = /** @class */ (function () {
             });
         });
     };
-    Client.prototype.embedToAction = function (m) {
+    Client.prototype.embedToAction = function (m, actionType) {
+        if (actionType === void 0) { actionType = "broadcast"; }
         var content = "";
         var bot_name = "Bot";
         if (m.embed && m.embed.html) {
@@ -159,24 +158,20 @@ var Client = /** @class */ (function () {
         else if (typeof m.content === "string") {
             content = m.content;
         }
-        if (this.logging) {
-            console.log({
-                msg_uuid: m.id || short.generate(),
-                bot_name: bot_name,
-                chat_uuid: m.channel.id,
-                reply_uuid: m.reply_id || "",
-                content: content,
-                action: "broadcast",
-            });
-        }
         var a = {
             msg_uuid: m.id || short.generate(),
             bot_name: bot_name,
             chat_uuid: m.channel.id,
             reply_uuid: m.reply_id || "",
             content: content,
-            action: "broadcast",
+            action: actionType,
         };
+        if (actionType === "pay" && m.recipient_id) {
+            a.recipient_id = m.recipient_id;
+        }
+        if (this.logging) {
+            console.log("===>", a);
+        }
         if (this.action) {
             this.action(a);
         }
