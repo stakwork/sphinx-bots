@@ -176,6 +176,9 @@ var Client = /** @class */ (function () {
             content: content,
             action: actionType,
         };
+        if (m.amount) {
+            a.amount = m.amount;
+        }
         if (actionType === "pay" && m.recipient_id) {
             a.recipient_id = m.recipient_id;
         }
