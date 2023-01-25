@@ -13,6 +13,7 @@ export default class MessageEmbed {
     html: string;
     fields: Field[];
     image: string;
+    only_owner: boolean;
     setTitle(title: string): this;
     setAuthor(author: string): this;
     setColor(color: any): this;
@@ -21,6 +22,7 @@ export default class MessageEmbed {
     setImage(image: string): this;
     addField(f: Field): this;
     addFields(fs: Field[]): this;
+    setOnlyOwner(onlyOwner: boolean): this;
     makeHTML(): this;
 }
 export {};

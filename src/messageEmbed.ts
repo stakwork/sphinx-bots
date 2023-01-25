@@ -16,6 +16,7 @@ export default class MessageEmbed {
   html: string = "";
   fields: Field[] = [];
   image: string = "";
+  only_owner: boolean = false;
 
   setTitle(title: string) {
     this.title = title;
@@ -54,6 +55,11 @@ export default class MessageEmbed {
 
   addFields(fs: Field[]) {
     this.fields = this.fields.concat(fs);
+    return this.makeHTML();
+  }
+
+  setOnlyOwner(onlyOwner: boolean) {
+    this.only_owner = onlyOwner;
     return this.makeHTML();
   }
 

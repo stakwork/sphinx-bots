@@ -11,6 +11,7 @@ var MessageEmbed = /** @class */ (function () {
         this.html = "";
         this.fields = [];
         this.image = "";
+        this.only_owner = false;
     }
     MessageEmbed.prototype.setTitle = function (title) {
         this.title = title;
@@ -42,6 +43,10 @@ var MessageEmbed = /** @class */ (function () {
     };
     MessageEmbed.prototype.addFields = function (fs) {
         this.fields = this.fields.concat(fs);
+        return this.makeHTML();
+    };
+    MessageEmbed.prototype.setOnlyOwner = function (onlyOwner) {
+        this.only_owner = onlyOwner;
         return this.makeHTML();
     };
     MessageEmbed.prototype.makeHTML = function () {
