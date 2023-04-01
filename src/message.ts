@@ -37,6 +37,7 @@ export interface Message {
   webhookID?: string;
   embed?: MessageEmbed;
   type?: number;
+  media_key?: string;
 }
 
 export interface Msg {
