@@ -50,7 +50,7 @@ var MessageEmbed = /** @class */ (function () {
         return this.makeHTML();
     };
     MessageEmbed.prototype.makeHTML = function () {
-        var h = '<div style="position:relative;max-width:280px;min-width:180px;">';
+        var h = '<div style="position:relative;max-width:fit-content;min-width:180px;">';
         if (this.title) {
             h += "<div style=\"font-size:15px;margin:5px 0;max-width:90%;\"><b>" + this.title + "</b></div>";
         }
