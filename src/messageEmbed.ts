@@ -65,7 +65,7 @@ export default class MessageEmbed {
 
   makeHTML() {
     let h: string =
-      '<div style="position:relative;max-width:280px;min-width:180px;">';
+      '<div style="position:relative;max-width:fit-content;min-width:180px;">';
     if (this.title) {
       h += `<div style="font-size:15px;margin:5px 0;max-width:90%;"><b>${this.title}</b></div>`;
     }
