@@ -48,5 +48,6 @@ export interface Action {
     reply_uuid?: string;
     recipient_id?: string;
     only_owner?: boolean;
+    only_user?: number;
 }
 export {};
