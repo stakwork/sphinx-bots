@@ -182,6 +182,9 @@ var Client = /** @class */ (function () {
         if (m.embed && m.embed.only_owner) {
             a.only_owner = true;
         }
+        if (m.embed && m.embed.only_user) {
+            a.only_user = m.embed.only_user;
+        }
         if (actionType === "pay" && m.recipient_id) {
             a.recipient_id = m.recipient_id;
         }

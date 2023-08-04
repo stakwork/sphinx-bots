@@ -154,6 +154,9 @@ export default class Client {
     if (m.embed && m.embed.only_owner) {
       a.only_owner = true;
     }
+    if (m.embed && m.embed.only_user) {
+      a.only_user = m.embed.only_user;
+    }
     if (actionType === "pay" && m.recipient_id) {
       a.recipient_id = m.recipient_id;
     }
@@ -262,4 +265,5 @@ export interface Action {
   reply_uuid?: string;
   recipient_id?: string;
   only_owner?: boolean;
+  only_user?: number;
 }
