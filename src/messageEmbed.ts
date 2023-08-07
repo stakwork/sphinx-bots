@@ -112,6 +112,9 @@ export default class MessageEmbed {
           '" />';
       }
     }
+    if (this.image) {
+      h += `<div style="display:flex;align-items:center;justify-content:center;width:100%;"><img style="max-width:100%;object-fit:cover;" src="${this.image}"/></div>`;
+    }
     h += "</div>";
     // h += '<!-- sphinx:test -->'
     this.html = sanitize(h);
