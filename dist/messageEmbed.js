@@ -92,7 +92,7 @@ var MessageEmbed = /** @class */ (function () {
             }
         }
         if (this.image) {
-            h += "<div style=\"display:flex;align-items:center;justify-content:center;width:100%;\"><img style=\"max-width:100%;object-fit:cover;\" src=\"" + this.image + "\"/></div>";
+            h += "<div style=\"display:flex;align-items:center;justify-content:center;width:100%;min-height:10rem;\"><img style=\"max-width:100%;object-fit:cover;\" src=\"" + this.image + "\"/></div>";
         }
         h += "</div>";
         // h += '<!-- sphinx:test -->'
