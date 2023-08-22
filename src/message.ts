@@ -38,6 +38,9 @@ export interface Message {
   embed?: MessageEmbed;
   type?: number;
   media_key?: string;
+  media_type?: string;
+  muid?: string;
+  media_token?: string;
 }
 
 export interface Msg {
