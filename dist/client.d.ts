@@ -49,5 +49,6 @@ export interface Action {
     recipient_id?: string;
     only_owner?: boolean;
     only_user?: number;
+    only_pubkey?: string;
 }
 export {};

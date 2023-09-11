@@ -13,6 +13,7 @@ var MessageEmbed = /** @class */ (function () {
         this.image = "";
         this.only_owner = false;
         this.only_user = 0;
+        this.only_pubkey = "";
     }
     MessageEmbed.prototype.setTitle = function (title) {
         this.title = title;
@@ -52,6 +53,10 @@ var MessageEmbed = /** @class */ (function () {
     };
     MessageEmbed.prototype.setOnlyUser = function (onlyUser) {
         this.only_user = onlyUser;
+        return this.makeHTML();
+    };
+    MessageEmbed.prototype.setOnlyPubkey = function (onlyPubkey) {
+        this.only_pubkey = onlyPubkey;
         return this.makeHTML();
     };
     MessageEmbed.prototype.makeHTML = function () {

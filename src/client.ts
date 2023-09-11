@@ -157,6 +157,9 @@ export default class Client {
     if (m.embed && m.embed.only_user) {
       a.only_user = m.embed.only_user;
     }
+    if (m.embed && m.embed.only_pubkey) {
+      a.only_pubkey = m.embed.only_pubkey;
+    }
     if (actionType === "pay" && m.recipient_id) {
       a.recipient_id = m.recipient_id;
     }
@@ -266,4 +269,5 @@ export interface Action {
   recipient_id?: string;
   only_owner?: boolean;
   only_user?: number;
+  only_pubkey?: string;
 }
