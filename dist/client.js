@@ -185,6 +185,9 @@ var Client = /** @class */ (function () {
         if (m.embed && m.embed.only_user) {
             a.only_user = m.embed.only_user;
         }
+        if (m.embed && m.embed.only_pubkey) {
+            a.only_pubkey = m.embed.only_pubkey;
+        }
         if (actionType === "pay" && m.recipient_id) {
             a.recipient_id = m.recipient_id;
         }

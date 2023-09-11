@@ -15,6 +15,7 @@ export default class MessageEmbed {
     image: string;
     only_owner: boolean;
     only_user: number;
+    only_pubkey: string;
     setTitle(title: string): this;
     setAuthor(author: string): this;
     setColor(color: any): this;
@@ -25,6 +26,7 @@ export default class MessageEmbed {
     addFields(fs: Field[]): this;
     setOnlyOwner(onlyOwner: boolean): this;
     setOnlyUser(onlyUser: number): this;
+    setOnlyPubkey(onlyPubkey: string): this;
     makeHTML(): this;
 }
 export {};

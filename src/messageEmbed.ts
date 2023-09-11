@@ -18,6 +18,7 @@ export default class MessageEmbed {
   image: string = "";
   only_owner: boolean = false;
   only_user: number = 0;
+  only_pubkey: string = "";
 
   setTitle(title: string) {
     this.title = title;
@@ -66,6 +67,11 @@ export default class MessageEmbed {
 
   setOnlyUser(onlyUser: number) {
     this.only_user = onlyUser;
+    return this.makeHTML();
+  }
+
+  setOnlyPubkey(onlyPubkey: string) {
+    this.only_pubkey = onlyPubkey;
     return this.makeHTML();
   }
 
