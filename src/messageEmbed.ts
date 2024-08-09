@@ -108,7 +108,7 @@ export default class MessageEmbed {
       h += `![thumbnail](${this.thumbnail})\n`;
     }
     this.html = h;
-    return;
+    return this;
   }
 
   makeHTML() {

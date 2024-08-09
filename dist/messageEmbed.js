@@ -90,7 +90,7 @@ var MessageEmbed = /** @class */ (function () {
             h += "![thumbnail](" + this.thumbnail + ")\n";
         }
         this.html = h;
-        return;
+        return this;
     };
     MessageEmbed.prototype.makeHTML = function () {
         var h = '<div style="position:relative;max-width:fit-content;min-width:180px;">';
