@@ -7,6 +7,8 @@ interface Field {
   color?: string;
 }
 
+type RenderMode = "html" | "markdown" | "plaintext";
+
 export default class MessageEmbed {
   author: string = "";
   title: string = "";
@@ -19,60 +21,94 @@ export default class MessageEmbed {
   only_owner: boolean = false;
   only_user: number = 0;
   only_pubkey: string = "";
+  mode: RenderMode = "markdown";
 
   setTitle(title: string) {
     this.title = title;
-    return this.makeHTML();
+    return this.render();
   }
 
   setAuthor(author: string) {
     this.author = author;
-    return this.makeHTML();
+    return this.render();
   }
 
   setColor(color: any) {
     this.color = color;
-    return this.makeHTML();
+    return this.render();
   }
 
   setDescription(desc: string) {
     this.description = desc;
-    return this.makeHTML();
+    return this.render();
   }
 
   setThumbnail(thumb: string) {
     this.thumbnail = thumb;
-    return this.makeHTML();
+    return this.render();
   }
 
   setImage(image: string) {
     this.image = image;
-    return this.makeHTML();
+    return this.render();
   }
 
   addField(f: Field) {
     this.fields.push(f);
-    return this.makeHTML();
+    return this.render();
   }
 
   addFields(fs: Field[]) {
     this.fields = this.fields.concat(fs);
-    return this.makeHTML();
+    return this.render();
   }
 
   setOnlyOwner(onlyOwner: boolean) {
     this.only_owner = onlyOwner;
-    return this.makeHTML();
+    return this.render();
   }
 
   setOnlyUser(onlyUser: number) {
     this.only_user = onlyUser;
-    return this.makeHTML();
+    return this.render();
   }
 
   setOnlyPubkey(onlyPubkey: string) {
     this.only_pubkey = onlyPubkey;
-    return this.makeHTML();
+    return this.render();
+  }
+
+  render() {
+    if (this.mode === "html") {
+      return this.makeHTML();
+    } else {
+      return this.makeMarkdown();
+    }
+  }
+
+  makeMarkdown() {
+    let h: string = "<!-- md -->\n";
+    if (this.title) {
+      h += `**${this.title}**\n`;
+    }
+    if (this.description) {
+      h += `${this.description}\n`;
+    }
+    if (this.fields && this.fields.length) {
+      this.fields.forEach((f) => {
+        if (f.name && f.value) {
+          h += `- ${f.name}: ${f.value}\n`;
+        }
+      });
+    }
+    if (this.image) {
+      h += `![image](${this.image})\n`;
+    }
+    if (this.thumbnail) {
+      h += `![thumbnail](${this.thumbnail})\n`;
+    }
+    this.html = h;
+    return;
   }
 
   makeHTML() {

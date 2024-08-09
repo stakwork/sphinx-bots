@@ -14,50 +14,83 @@ var MessageEmbed = /** @class */ (function () {
         this.only_owner = false;
         this.only_user = 0;
         this.only_pubkey = "";
+        this.mode = "markdown";
     }
     MessageEmbed.prototype.setTitle = function (title) {
         this.title = title;
-        return this.makeHTML();
+        return this.render();
     };
     MessageEmbed.prototype.setAuthor = function (author) {
         this.author = author;
-        return this.makeHTML();
+        return this.render();
     };
     MessageEmbed.prototype.setColor = function (color) {
         this.color = color;
-        return this.makeHTML();
+        return this.render();
     };
     MessageEmbed.prototype.setDescription = function (desc) {
         this.description = desc;
-        return this.makeHTML();
+        return this.render();
     };
     MessageEmbed.prototype.setThumbnail = function (thumb) {
         this.thumbnail = thumb;
-        return this.makeHTML();
+        return this.render();
     };
     MessageEmbed.prototype.setImage = function (image) {
         this.image = image;
-        return this.makeHTML();
+        return this.render();
     };
     MessageEmbed.prototype.addField = function (f) {
         this.fields.push(f);
-        return this.makeHTML();
+        return this.render();
     };
     MessageEmbed.prototype.addFields = function (fs) {
         this.fields = this.fields.concat(fs);
-        return this.makeHTML();
+        return this.render();
     };
     MessageEmbed.prototype.setOnlyOwner = function (onlyOwner) {
         this.only_owner = onlyOwner;
-        return this.makeHTML();
+        return this.render();
     };
     MessageEmbed.prototype.setOnlyUser = function (onlyUser) {
         this.only_user = onlyUser;
-        return this.makeHTML();
+        return this.render();
     };
     MessageEmbed.prototype.setOnlyPubkey = function (onlyPubkey) {
         this.only_pubkey = onlyPubkey;
-        return this.makeHTML();
+        return this.render();
+    };
+    MessageEmbed.prototype.render = function () {
+        if (this.mode === "html") {
+            return this.makeHTML();
+        }
+        else {
+            return this.makeMarkdown();
+        }
+    };
+    MessageEmbed.prototype.makeMarkdown = function () {
+        var h = "<!-- md -->\n";
+        if (this.title) {
+            h += "**" + this.title + "**\n";
+        }
+        if (this.description) {
+            h += this.description + "\n";
+        }
+        if (this.fields && this.fields.length) {
+            this.fields.forEach(function (f) {
+                if (f.name && f.value) {
+                    h += "- " + f.name + ": " + f.value + "\n";
+                }
+            });
+        }
+        if (this.image) {
+            h += "![image](" + this.image + ")\n";
+        }
+        if (this.thumbnail) {
+            h += "![thumbnail](" + this.thumbnail + ")\n";
+        }
+        this.html = h;
+        return;
     };
     MessageEmbed.prototype.makeHTML = function () {
         var h = '<div style="position:relative;max-width:fit-content;min-width:180px;">';
