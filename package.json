@@ -1,6 +1,6 @@
 {
   "name": "sphinx-bot",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Sphinx chat bots",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

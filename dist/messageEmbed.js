@@ -69,7 +69,7 @@ var MessageEmbed = /** @class */ (function () {
         }
     };
     MessageEmbed.prototype.makeMarkdown = function () {
-        var h = "<!-- md -->\n";
+        var h = "";
         if (this.title) {
             h += "**" + this.title + "**\n";
         }

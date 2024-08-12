@@ -87,7 +87,7 @@ export default class MessageEmbed {
   }
 
   makeMarkdown() {
-    let h: string = "<!-- md -->\n";
+    let h: string = "";
     if (this.title) {
       h += `**${this.title}**\n`;
     }
