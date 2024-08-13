@@ -39,7 +39,7 @@ export default class Client {
 }
 export interface Action {
     action: string;
-    chat_uuid: string;
+    chat_pubkey: string;
     bot_name?: string;
     amount?: number;
     pubkey?: string;

@@ -171,7 +171,7 @@ var Client = /** @class */ (function () {
         var a = {
             msg_uuid: m.id || short.generate(),
             bot_name: bot_name,
-            chat_uuid: m.channel.id,
+            chat_pubkey: m.channel.id,
             reply_uuid: m.reply_id || "",
             content: content,
             action: actionType,
