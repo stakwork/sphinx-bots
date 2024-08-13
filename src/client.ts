@@ -143,7 +143,7 @@ export default class Client {
     const a: Action = {
       msg_uuid: m.id || short.generate(),
       bot_name,
-      chat_uuid: m.channel.id,
+      chat_pubkey: m.channel.id,
       reply_uuid: m.reply_id || "",
       content,
       action: actionType,
@@ -259,7 +259,7 @@ export default class Client {
 
 export interface Action {
   action: string;
-  chat_uuid: string;
+  chat_pubkey: string;
   bot_name?: string;
   amount?: number;
   pubkey?: string;
